@@ -15,7 +15,7 @@ group = 'net.foragerr.jmeter'
 archivesBaseName = 'jmeter-gradle-plugin'
 
 ext.thisPluginVersion="1.1.3"
-ext.jmVersion = "5.0"
+ext.jmVersion = "5.4.2"
 ext.jmPluginVersion = "1.4.0"
 version = "$thisPluginVersion-$jmVersion-SNAPSHOT"
 
@@ -34,7 +34,16 @@ configurations.all {
         
     }
 }
-
+// There's a bug in JMeter leaving extra metadata right now. This is a workaround.
+class JMeterRule implements ComponentMetadataRule {
+        void execute(ComponentMetadataContext context) {
+            context.details.allVariants {
+                withDependencies {
+                    removeAll { it.group == "org.apache.jmeter" && it.name == "bom" }
+                }
+            }
+        }
+    }
 dependencies {
     implementation gradleApi()
     implementation 'xml-apis:xml-apis:1.4.01'
@@ -99,13 +108,38 @@ dependencies {
     implementation("org.apache.jmeter:ApacheJMeter_junit:${jmVersion}")
 	implementation("org.apache.jmeter:ApacheJMeter_components:${jmVersion}")
     implementation("org.apache.jmeter:ApacheJMeter_config:${jmVersion}")
-    implementation("org.apache.jmeter:ApacheJMeter_junit-test:${jmVersion}")
+    implementation("org.apache.jmeter:ApacheJMeter_junit-test:5.1.1")
     implementation("org.apache.jmeter:ApacheJMeter_mongodb:${jmVersion}")
     implementation("org.apache.jmeter:ApacheJMeter_native:${jmVersion}")
     implementation("org.apache.jmeter:ApacheJMeter:${jmVersion}")
     implementation("org.apache.jmeter:jorphan:${jmVersion}")
 
 	testImplementation "junit:junit:4.12"
+	
+	//Jmmeter bom workaround
+	components {
+             withModule("org.apache.jmeter:ApacheJMeter_components", JMeterRule)
+    		withModule("org.apache.jmeter:ApacheJMeter_http", JMeterRule)
+    withModule("org.apache.jmeter:ApacheJMeter_jdbc", JMeterRule)
+    withModule("org.apache.jmeter:ApacheJMeter_core", JMeterRule)
+    withModule("org.apache.jmeter:ApacheJMeter_tcp", JMeterRule)
+    withModule("org.apache.jmeter:ApacheJMeter_junit", JMeterRule)
+    withModule("org.apache.jmeter:ApacheJMeter_java", JMeterRule)
+    withModule("org.apache.jmeter:ApacheJMeter_mail", JMeterRule)
+    withModule("org.apache.jmeter:ApacheJMeter_ldap", JMeterRule)
+    withModule("org.apache.jmeter:ApacheJMeter_ftp", JMeterRule)
+    withModule("org.apache.jmeter:ApacheJMeter_functions", JMeterRule)
+    withModule("org.apache.jmeter:ApacheJMeter_jms", JMeterRule)
+    withModule("org.apache.jmeter:ApacheJMeter_config", JMeterRule)
+    withModule("org.apache.jmeter:ApacheJMeter_junit", JMeterRule)
+	withModule("org.apache.jmeter:ApacheJMeter_components", JMeterRule)
+    withModule("org.apache.jmeter:ApacheJMeter_config", JMeterRule)
+    withModule("org.apache.jmeter:ApacheJMeter_junit-test", JMeterRule)
+    withModule("org.apache.jmeter:ApacheJMeter_mongodb", JMeterRule)
+    withModule("org.apache.jmeter:ApacheJMeter_native", JMeterRule)
+    withModule("org.apache.jmeter:ApacheJMeter", JMeterRule)
+    withModule("org.apache.jmeter:jorphan", JMeterRule)
+        }
 }
 
 
