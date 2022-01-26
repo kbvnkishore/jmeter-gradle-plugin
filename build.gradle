@@ -1,7 +1,7 @@
 //--- Plugins ---
 plugins {
     id "com.jfrog.bintray" version "1.8.4"
-	id "com.jfrog.artifactory" version "4.7.5"
+	id "com.jfrog.artifactory" version "4.18.3"
 	id "com.gradle.plugin-publish" version "0.10.0"
     id 'com.github.ben-manes.versions' version '0.20.0'
 }
@@ -14,7 +14,7 @@ apply plugin: 'maven-publish'
 group = 'net.foragerr.jmeter'
 archivesBaseName = 'jmeter-gradle-plugin'
 
-ext.thisPluginVersion="1.1.2"
+ext.thisPluginVersion="1.1.3"
 ext.jmVersion = "5.0"
 ext.jmPluginVersion = "1.4.0"
 version = "$thisPluginVersion-$jmVersion-SNAPSHOT"
@@ -25,91 +25,96 @@ repositories {
     maven{ url 'https://repository.apache.org/content/repositories/releases'}
 }
 
+
 //--- Dependencies ---
 configurations.all {
     resolutionStrategy {
-        force "org.codehaus.groovy:groovy-all:2.4.15"
+      //  force "org.codehaus.groovy:groovy-all:2.4.15"
+        force "org.codehaus.groovy:groovy-all:2.5.12"
+        
     }
 }
+
 dependencies {
-    compile gradleApi()
-    compile 'xml-apis:xml-apis:1.4.01'
-    compile	'org.apache.ant:ant:1.10.5'
-    compile	'org.rendersnake:rendersnake:1.9.0'
-    compile	'org.beanshell:bsh-core:2.0b4'
-    compile 'commons-httpclient:commons-httpclient:3.1'
+    implementation gradleApi()
+    implementation 'xml-apis:xml-apis:1.4.01'
+    implementation	'org.apache.ant:ant:1.10.5'
+    implementation	'org.rendersnake:rendersnake:1.9.0'
+    implementation	'org.beanshell:bsh-core:2.0b4'
+    implementation 'commons-httpclient:commons-httpclient:3.1'
 
     ['win', 'linux', 'mac'].each { platform ->
-        compile "org.openjfx:javafx-base:11:${platform}"
-        compile "org.openjfx:javafx-graphics:11:${platform}"
-        compile "org.openjfx:javafx-controls:11:${platform}"
-        compile "org.openjfx:javafx-swing:11:${platform}"
+        implementation "org.openjfx:javafx-base:11:${platform}"
+        implementation "org.openjfx:javafx-graphics:11:${platform}"
+        implementation "org.openjfx:javafx-controls:11:${platform}"
+        implementation "org.openjfx:javafx-swing:11:${platform}"
     }
 
     //jm-plugins dependencies
-    compile("kg.apc:jmeter-plugins:${jmPluginVersion}"){
+    implementation("kg.apc:jmeter-plugins:${jmPluginVersion}"){
         exclude group: 'commons-math3', module: 'commons-math3'
         exclude group: 'commons-pool2', module: 'commons-pool2'
         exclude group: 'xml-apis', module: 'xml-apis'
     }
-    compile("kg.apc:jmeter-plugins-standard:${jmPluginVersion}"){
+    implementation("kg.apc:jmeter-plugins-standard:${jmPluginVersion}"){
         exclude group: 'commons-math3', module: 'commons-math3'
         exclude group: 'commons-pool2', module: 'commons-pool2'
         exclude group: 'xml-apis', module: 'xml-apis'
     }
-    compile("kg.apc:jmeter-plugins-extras:${jmPluginVersion}"){
+    implementation("kg.apc:jmeter-plugins-extras:${jmPluginVersion}"){
         exclude group: 'commons-math3', module: 'commons-math3'
         exclude group: 'commons-pool2', module: 'commons-pool2'
         exclude group: 'xml-apis', module: 'xml-apis'
     }
-    compile("kg.apc:jmeter-plugins-common:${jmPluginVersion}"){
+    implementation("kg.apc:jmeter-plugins-common:${jmPluginVersion}"){
         exclude group: 'commons-math3', module: 'commons-math3'
         exclude group: 'commons-pool2', module: 'commons-pool2'
         exclude group: 'xml-apis', module: 'xml-apis'
     }
-    compile("kg.apc:jmeter-plugins-extras-libs:${jmPluginVersion}"){
+    implementation("kg.apc:jmeter-plugins-extras-libs:${jmPluginVersion}"){
         exclude group: 'commons-math3', module: 'commons-math3'
         exclude group: 'commons-pool2', module: 'commons-pool2'
         exclude group: 'xml-apis', module: 'xml-apis'
     }
-    compile("kg.apc:jmeter-plugins-webdriver:2.3"){
+    implementation("kg.apc:jmeter-plugins-webdriver:2.3"){
         exclude group: 'commons-math3', module: 'commons-math3'
         exclude group: 'commons-pool2', module: 'commons-pool2'
         exclude group: 'xml-apis', module: 'xml-apis'
     }
 
     //jm dependencies
-    compile("org.apache.jmeter:ApacheJMeter_components:${jmVersion}")
-    compile("org.apache.jmeter:ApacheJMeter_http:${jmVersion}")
-    compile("org.apache.jmeter:ApacheJMeter_jdbc:${jmVersion}")
-    compile("org.apache.jmeter:ApacheJMeter_core:${jmVersion}")
-    compile("org.apache.jmeter:ApacheJMeter_tcp:${jmVersion}")
-    compile("org.apache.jmeter:ApacheJMeter_junit:${jmVersion}")
-    compile("org.apache.jmeter:ApacheJMeter_java:${jmVersion}")
-    compile("org.apache.jmeter:ApacheJMeter_mail:${jmVersion}")
-    compile("org.apache.jmeter:ApacheJMeter_ldap:${jmVersion}")
-    compile("org.apache.jmeter:ApacheJMeter_ftp:${jmVersion}")
-    compile("org.apache.jmeter:ApacheJMeter_functions:${jmVersion}")
-    compile("org.apache.jmeter:ApacheJMeter_jms:${jmVersion}")
-    compile("org.apache.jmeter:ApacheJMeter_config:${jmVersion}")
-    compile("org.apache.jmeter:ApacheJMeter_junit:${jmVersion}")
-	compile("org.apache.jmeter:ApacheJMeter_components:${jmVersion}")
-    compile("org.apache.jmeter:ApacheJMeter_config:${jmVersion}")
-    compile("org.apache.jmeter:ApacheJMeter_junit-test:${jmVersion}")
-    compile("org.apache.jmeter:ApacheJMeter_mongodb:${jmVersion}")
-    compile("org.apache.jmeter:ApacheJMeter_native:${jmVersion}")
-    compile("org.apache.jmeter:ApacheJMeter:${jmVersion}")
-    compile("org.apache.jmeter:jorphan:${jmVersion}")
+    implementation("org.apache.jmeter:ApacheJMeter_components:${jmVersion}")
+    implementation("org.apache.jmeter:ApacheJMeter_http:${jmVersion}")
+    implementation("org.apache.jmeter:ApacheJMeter_jdbc:${jmVersion}")
+    implementation("org.apache.jmeter:ApacheJMeter_core:${jmVersion}")
+    implementation("org.apache.jmeter:ApacheJMeter_tcp:${jmVersion}")
+    implementation("org.apache.jmeter:ApacheJMeter_junit:${jmVersion}")
+    implementation("org.apache.jmeter:ApacheJMeter_java:${jmVersion}")
+    implementation("org.apache.jmeter:ApacheJMeter_mail:${jmVersion}")
+    implementation("org.apache.jmeter:ApacheJMeter_ldap:${jmVersion}")
+    implementation("org.apache.jmeter:ApacheJMeter_ftp:${jmVersion}")
+    implementation("org.apache.jmeter:ApacheJMeter_functions:${jmVersion}")
+    implementation("org.apache.jmeter:ApacheJMeter_jms:${jmVersion}")
+    implementation("org.apache.jmeter:ApacheJMeter_config:${jmVersion}")
+    implementation("org.apache.jmeter:ApacheJMeter_junit:${jmVersion}")
+	implementation("org.apache.jmeter:ApacheJMeter_components:${jmVersion}")
+    implementation("org.apache.jmeter:ApacheJMeter_config:${jmVersion}")
+    implementation("org.apache.jmeter:ApacheJMeter_junit-test:${jmVersion}")
+    implementation("org.apache.jmeter:ApacheJMeter_mongodb:${jmVersion}")
+    implementation("org.apache.jmeter:ApacheJMeter_native:${jmVersion}")
+    implementation("org.apache.jmeter:ApacheJMeter:${jmVersion}")
+    implementation("org.apache.jmeter:jorphan:${jmVersion}")
 
-	testCompile "junit:junit:4.12"
+	testImplementation "junit:junit:4.12"
 }
 
 
 //--- Tasks ---
+/*
 task wrapper(type: Wrapper) {
     gradleVersion = '4.10.2'
 }
-
+*/
 task javadocJar(type: Jar, dependsOn: javadoc) {
     classifier = 'javadoc'
     from 'build/docs/javadoc'
