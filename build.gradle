@@ -1,9 +1,11 @@
 //--- Plugins ---
+
 plugins {
     id "com.jfrog.bintray" version "1.8.4"
 	id "com.jfrog.artifactory" version "4.18.3"
 	id "com.gradle.plugin-publish" version "0.10.0"
     id 'com.github.ben-manes.versions' version '0.20.0'
+    id 'java-gradle-plugin'
 }
 
 apply plugin: 'groovy'
@@ -321,4 +323,14 @@ artifactory {
 			password = System.getenv('bintray_api_key')
 		}
 	}
+}
+
+
+gradlePlugin {
+    plugins {
+        simplePlugin {
+            id = 'test.jmeter.plugin.jm'
+            implementationClass = 'net.foragerr.jmeter.gradle.plugins.JMPlugin'
+        }
+    }
 }

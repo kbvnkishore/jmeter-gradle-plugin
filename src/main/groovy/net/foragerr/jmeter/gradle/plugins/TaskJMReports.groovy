@@ -23,7 +23,8 @@ import static org.rendersnake.HtmlAttributesFactory.lang
 public class TaskJMReports extends DefaultTask {
 
     protected final Logger log = Logging.getLogger(getClass())
-    File reportDir = null
+    // Added "protected" scope to the reportDir variable.
+    protected File reportDir = null
 
     public static final List<String> pluginTypes = Arrays.asList(
             "ResponseTimesOverTime",
